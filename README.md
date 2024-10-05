@@ -14,3 +14,53 @@ SQL> ALTER PLUGGABLE DATABASE an_to_delete_pdb CLOSE IMMEDIATE;
 SQL> ALTER PLUGGABLE DATABASE an_to_delete_pdb UNPLUG INTO 'C:\oracle21c\oradata\ORCL\pdbseed\sqlplus\pdbs\de_plsqlauca\an_to_delete_pdb.xml';
 
 the command ALTER PLUGGABLE DATABASE an_to_delete_pdb UNPLUG INTO 'C:\oracle21c\oradata\ORCL\pdbseed\sqlplus\pdbs\de_plsqlauca\an_to_delete_pdb.xml'; is used to unplug the pluggable database named an_to_delete_pdb and save its metadata to the specified XML file. 
+
+
+
+oracle enterprise Manager Dashboard
+SQL> show con_name;
+
+CON_NAME
+------------------------------
+CDB$ROOT
+SQL> ALTER SESSION SET CONTAINER = CDB$ROOT;
+
+Session altered.
+
+SQL> SELECT DBMS_XDB_CONFIG.GETHTTPPORT() AS HTTP_PORT,
+  2         DBMS_XDB_CONFIG.GETHTTPSPORT() AS HTTPS_PORT
+  3  FROM dual;
+
+ HTTP_PORT HTTPS_PORT
+---------- ----------
+      8443       5500
+
+SQL> BEGIN
+  2             DBMS_XDB_CONFIG.SETHTTPPORT(8080);
+  3             DBMS_XDB_CONFIG.SETHTTSPPORT(8443);
+  4     END;
+  5  /
+                DBMS_XDB_CONFIG.SETHTTSPPORT(8443);
+                                *
+ERROR at line 3:
+ORA-06550: line 3, column 19:
+PLS-00302: component 'SETHTTSPPORT' must be declared
+ORA-06550: line 3, column 3:
+PL/SQL: Statement ignored
+
+
+SQL> BEGIN
+  2             DBMS_XDB_CONFIG.SETHTTPPORT(8080);
+  3             DBMS_XDB_CONFIG.SETHTTPSPORT(8443);
+  4     END;
+  5  /
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT DBMS_XDB_CONFIG.GETHTTPPORT() AS HTTP_PORT,
+  2         DBMS_XDB_CONFIG.GETHTTPSPORT() AS HTTPS_PORT
+  3  FROM dual;
+
+ HTTP_PORT HTTPS_PORT
+---------- ----------
+      8080       8443
